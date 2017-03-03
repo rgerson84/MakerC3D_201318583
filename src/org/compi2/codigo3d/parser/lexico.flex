@@ -34,6 +34,7 @@ NO_IGUAL        = "!="
 
 OR              = "||"
 AND             = "&&"
+NEG             = "!"
 
 ID              = [A-Za-z][_0-9A-Za-z]*
 ENTERO          = [0-9]+
@@ -62,6 +63,7 @@ ENTER   = [\ \n]
 <YYINITIAL> {NO_IGUAL}	    { return new Symbol(sym.NO_IGUAL, yyline, yycolumn, null); }
 <YYINITIAL> {OR}	    { return new Symbol(sym.OR, yyline, yycolumn, null); }
 <YYINITIAL> {AND}	    { return new Symbol(sym.AND, yyline, yycolumn, null); }
+<YYINITIAL> {NEG}	    { return new Symbol(sym.NEG, yyline, yycolumn, null); }
 
 <YYINITIAL> {SPACE}     { /*Espacios en blanco, ignorados*/ }
 <YYINITIAL> {ENTER}     { /*Saltos de linea, ignorados*/}

@@ -23,7 +23,7 @@ action code
 :}
 
 terminal String ID, ENTERO, DECIMAL;
-terminal TokenC3D MAS, MENOS, MULT, DIV, POT, PAR_IZQ, PAR_DER, MAYOR,MENOR,MENOR_IGUAL,MAYOR_IGUAL,IGUAL_IGUAL,NO_IGUAL,OR,AND;
+terminal TokenC3D MAS, MENOS, MULT, DIV, POT, PAR_IZQ, PAR_DER, MAYOR,MENOR,MENOR_IGUAL,MAYOR_IGUAL,IGUAL_IGUAL,NO_IGUAL,OR,AND,NEG;
 nonterminal NodoC3D inicial, expresion, cond, rel, oprel;
 
 precedence left OR;
@@ -56,7 +56,13 @@ cond        ::=     cond:izq OR cond:der
                         ControlC3D.agregarC3D(c3d);
                         RESULT = new NodoC3D(temp);
                     :}
-                
+                | NEG cond:c
+                    {:
+                        String temp = ControlC3D.generaTemp();
+                        String c3d = temp + " = " + " ! " + c.getCad() + ";\n";
+                        ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(temp);
+                    :}
                 |   rel:r
                     {:  
                         System.out.println("Entro Relacional");
