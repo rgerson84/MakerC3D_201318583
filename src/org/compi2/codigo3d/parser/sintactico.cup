@@ -23,20 +23,84 @@ action code
 :}
 
 terminal String ID, ENTERO, DECIMAL;
-terminal TokenC3D MAS, MENOS, MULT, DIV, POT, PAR_IZQ, PAR_DER;
-nonterminal NodoC3D inicial, expresion;
+terminal TokenC3D MAS, MENOS, MULT, DIV, POT, PAR_IZQ, PAR_DER, MAYOR,MENOR,MENOR_IGUAL,MAYOR_IGUAL,IGUAL_IGUAL,NO_IGUAL,OR,AND;
+nonterminal NodoC3D inicial, expresion, cond, rel, oprel;
 
+precedence left OR;
+precedence left AND;
 precedence left MAS, MENOS;
 precedence left MULT, DIV; 
 precedence right POT; 
 
 start with inicial;
 
-inicial     ::= {: ControlC3D.reiniciar(); :} expresion:exp 
+inicial     ::= {: ControlC3D.reiniciar(); :} cond:exp 
                     {: 
                         RESULT = exp;
                         ControlC3D.agregarC3D("//Último valor: " + exp.getCad());
                     :};
+
+cond        ::=     cond:izq OR cond:der
+                    {:
+                        String temp = ControlC3D.generaTemp();
+                        String c3d = temp + " = " + izq.getCad() + " || " + der.getCad() + ";\n";
+                        ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(temp);
+                    :}
+
+                |   cond:izq AND cond:der
+
+                    {:
+                        String temp = ControlC3D.generaTemp();
+                        String c3d = temp + " = " + izq.getCad() + " && " + der.getCad() + ";\n";
+                        ControlC3D.agregarC3D(c3d);
+                        RESULT = new NodoC3D(temp);
+                    :}
+                
+                |   rel:r
+                    {:  
+                        System.out.println("Entro Relacional");
+                        RESULT = r;
+                    :};
+
+rel         ::= expresion:izq oprel:op expresion:der
+                {:
+                    String temp = ControlC3D.generaTemp();
+                    String c3d = temp + " = " + izq.getCad() + op.getCad() + der.getCad() + ";\n";
+                    System.out.println(op.getCad());
+                    ControlC3D.agregarC3D(c3d);
+                    RESULT = new NodoC3D(temp);
+                :}
+                | expresion:e
+                {:
+                    RESULT = e;
+                :};
+                
+
+oprel       ::= MAYOR
+                {:
+                    RESULT = new NodoC3D(">");
+                :}
+                |MENOR
+                {:
+                    RESULT = new NodoC3D("<");
+                :}
+                |MENOR_IGUAL
+                {:
+                    RESULT = new NodoC3D("<=");
+                :}
+                |MAYOR_IGUAL
+                {:
+                    RESULT = new NodoC3D(">=");
+                :}
+                |NO_IGUAL
+                {:
+                    RESULT = new NodoC3D("!=");
+                :}
+                |IGUAL_IGUAL
+                {:
+                    RESULT = new NodoC3D("==");
+                :};
 
 expresion   ::= expresion:izq MAS expresion:der
                     {: 

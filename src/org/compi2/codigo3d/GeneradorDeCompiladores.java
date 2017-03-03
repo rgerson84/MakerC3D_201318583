@@ -17,6 +17,7 @@ public class GeneradorDeCompiladores {
             jflex.Main.generate(opcFlex);
             String opcCUP[] = { "-destdir", ruta, "-parser", "parser", ruta + "sintactico.cup" };
             java_cup.Main.main(opcCUP);
+            System.out.println("Compilo Archivos");
         } catch (Exception e) {
             e.printStackTrace();
         }
